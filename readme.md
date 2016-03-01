@@ -7,20 +7,19 @@ Tweets pushed will have the first 120 characters of the article text, followed b
 
 # Installation
 
-Download ZIP or checkout master branch.
-Copy files into root of Kirby directory.
-Navigate in code editor to site/config/config.php
-Add the following lines:
+1. Download ZIP or checkout master branch.
+2. Copy files into root of Kirby directory.
+3. Navigate in code editor to site/config/config.php
+4. Add the following lines:
 
+```
 c::set('twitterpush.consumerKey', *Consumer Key*);
-
 c::set('twitterpush.consumerSecret', *Consumer Secret*);
-
 c::set('twitterpush.accessToken', *Access Token*);
-
 c::set('twitterpush.accessTokenSecret', *Access Token Secret*);
+```
 
-Replace the keys / tokens marked with ** with the values found in your Twitter developer account,
+5. Replace the keys / tokens marked with ** with the values found in your Twitter developer account,
 creating the app and generating these if not done already. Tools can be found 
 in the [Twitter Developer Panel](https://apps.twitter.com/)
 

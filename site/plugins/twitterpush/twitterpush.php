@@ -1,14 +1,9 @@
 <?php
 
-kirby()->hook('panel.page.create', 'push');
-
 /**
  * Push a shortened version of the post to Twitter, with OAuth.
- *
- * @param $page
- * @return bool
  */
-function push($page) {
+kirby()->hook('panel.page.create', function($page) {
     if (c::get('twitterpush.enabled') == true) {
         return false;
     }
@@ -19,6 +14,12 @@ function push($page) {
         'at' => c::get('twitterpush.accessToken'),
         'ats' => c::get('twitterpush.accessTokenSecret')
     ];
+
+    foreach ($keys as $key) {
+        if ($key == null || $key == "") {
+            return response::error("Keys not correctly set.");
+        }
+    }
 
     $oAuth = new OAuth(
         $keys['ck'],
@@ -40,7 +41,7 @@ function push($page) {
     }
 
     return true;
-}
+});
 
 /**
  * Generate the content of the Tweet.
