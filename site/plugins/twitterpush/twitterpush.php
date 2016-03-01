@@ -4,7 +4,7 @@
  * Push a shortened version of the post to Twitter, with OAuth.
  */
 kirby()->hook('panel.page.create', function($page) {
-    if (c::get('twitterpush.enabled') == true) {
+    if (c::get('twitterpush.enabled') == false) {
         return false;
     }
 
