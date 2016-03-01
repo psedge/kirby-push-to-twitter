@@ -12,10 +12,17 @@ Copy files into root of Kirby directory.
 Navigate in code editor to site/config/config.php
 Add the following lines:
 
-c::set('twitterpush.consumerKey', *Access Token Secret*);
-c::set('twitterpush.consumerSecret', *Access Token Secret*);
-c::set('twitterpush.accessToken', *Access Token Secret*);
+c::set('twitterpush.consumerKey', *Consumer Key*);
+
+c::set('twitterpush.consumerSecret', *Consumer Secret*);
+
+c::set('twitterpush.accessToken', *Access Token*);
+
 c::set('twitterpush.accessTokenSecret', *Access Token Secret*);
+
+Replace the keys / tokens marked with ** with the values found in your Twitter developer account,
+creating the app and generating these if not done already. Tools can be found 
+in the [Twitter Developer Panel](https://apps.twitter.com/)
 
 
 # Technical Notes
@@ -28,4 +35,6 @@ You can enable debug mode by adding the following to your site's config:
 c::set('twitterpush.enabled', false);
 
 
-This setting will disable any use of the library, and prevent the plugin being called. 
+This setting will disable any use of the library, and prevent the plugin being called.
+ 
+ ---
