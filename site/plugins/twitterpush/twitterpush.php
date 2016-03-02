@@ -1,18 +1,26 @@
 <?php
 
-/**
+/*
  * Push a shortened version of the post to Twitter, with OAuth.
  */
-kirby()->hook('panel.page.create', function($page) {
+kirby()->hook('panel.page.update', function ($page) {
     if (c::get('twitterpush.enabled') == false) {
         return false;
     }
 
+    if (!extension_loaded("oauth")) {
+        return false;
+    }
+
+    if (!shouldBePushed($page)) {
+        return false;
+    }
+
     $keys = [
-        'ck' => c::get('twitterpush.consumerKey'),
-        'cs' => c::get('twitterpush.consumerSecret'),
-        'at' => c::get('twitterpush.accessToken'),
-        'ats' => c::get('twitterpush.accessTokenSecret')
+            'ck' => c::get('twitterpush.consumerKey'),
+            'cs' => c::get('twitterpush.consumerSecret'),
+            'at' => c::get('twitterpush.accessToken'),
+            'ats' => c::get('twitterpush.accessTokenSecret')
     ];
 
     foreach ($keys as $key) {
@@ -22,10 +30,10 @@ kirby()->hook('panel.page.create', function($page) {
     }
 
     $oAuth = new OAuth(
-        $keys['ck'],
-        $keys['cs'],
-        OAUTH_SIG_METHOD_HMACSHA1,
-        OAUTH_AUTH_TYPE_URI
+            $keys['ck'],
+            $keys['cs'],
+            OAUTH_SIG_METHOD_HMACSHA1,
+            OAUTH_AUTH_TYPE_URI
     );
 
     $oAuth->setToken($keys['at'], $keys['ats']);
@@ -34,14 +42,41 @@ kirby()->hook('panel.page.create', function($page) {
 
     try {
         $oAuth->fetch($baseUrl, [
-            'status' => getTweetContent($page),
+                'status' => getTweetContent($page),
         ], OAUTH_HTTP_METHOD_POST);
     } catch (OAuthException $e) {
-        return response::error($e->getMessage());
+        return false;
     }
 
     return true;
 });
+
+/**
+ * Check to see if the ID matches our pages config.
+ *
+ * @param $page
+ * @return bool
+ */
+function shouldBePushed($page)
+{
+    $pages = c::get('twitterpush.pages');
+
+    foreach ($pages as $pageString) {
+        $parts = explode('/', $page->id);
+
+        $parentString = implode('/', array_slice($parts, 0, count($parts) - 1)) . '/';
+
+        // used wilcard, and found this page in the parent string or
+        // this is the page
+        if ((substr($pageString, -1, 1) == '*' && strpos($pageString, $parentString) == 0) ||
+                ($pageString == $page->id)
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 /**
  * Generate the content of the Tweet.
@@ -52,5 +87,6 @@ kirby()->hook('panel.page.create', function($page) {
  */
 function getTweetContent($page)
 {
-    return substr($page->text(), 0, 120) . ' ' . $page->url();
+    return substr($page->text(), 0, 118) . ' ' . "http://google.com/";
+//    return substr($page->text(), 0, 120) . ' ' . $page->url();
 }
